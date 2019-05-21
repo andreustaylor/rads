@@ -70,7 +70,7 @@ $(CONFIG):	configure $(CONFIG_IN)
 #-----------------------------------------------------------------------
 
 update:
-	git pull -t origin master
+	git pull -t origin AUSBOM
 
 refresh:
-	git pull -t origin master | grep -q "Already up-to-date." ; if test $$? -eq 1 ; then $(MAKE) install ; fi
+	git pull -t origin AUSBOM | grep -q "Already up-to-date." ; if test $$? -eq 1 ; then $(MAKE) install ; fi
