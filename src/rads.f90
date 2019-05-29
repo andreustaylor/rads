@@ -54,7 +54,7 @@ type :: rads_varinfo                                 ! Information on variable u
 	character(len=rads_strl) :: dataname             ! Name associated with data (e.g. NetCDF var name)
 	character(len=rads_cmdl) :: flag_meanings        ! Optional meaning of flag values ('' if none)
 	character(len=rads_cmdl) :: quality_flag         ! Quality flag(s) associated with var ('' if none)
-	character(len=rads_cmdl) :: comment              ! Optional comment ('' if none)
+	character(len=rads_strl) :: comment              ! Optional comment ('' if none)
 	character(len=rads_varl) :: units                ! Optional units of variable ('' if none)
 	character(len=rads_varl) :: format               ! Fortran format for output
 	character(len=rads_varl) :: gridx, gridy         ! RADS variable names of the grid x and y coords
@@ -2068,6 +2068,12 @@ use rads_misc
 use rads_math
 type(math_ll), pointer :: top
 integer(fourbyteint) :: i, i0, i1, istat
+type(rads_var), pointer :: var_tmp ! extra pointer so we can derefernce alias names for info summary 
+character(len=:), allocatable :: math_summary_string  ! note: could become longer than target in S%comment
+
+! Init a string to summarise details of the math operations
+! ...idea is to accumulate by concatenation the RPN string - but using the full long name rather than alias
+math_summary_string = "method"
 
 ! Start with a nullified 'top'
 nullify(top)
@@ -2081,7 +2087,16 @@ do
 	if (istat /= 0) then  ! No command or value, likely to be a variable
 		call math_push (P%ndata,top)
 		call rads_get_var_by_name (S, P, info%dataname(i0:i1-1), top%data)
-	endif
+        ! find the full name of this variable (not just the alias)
+        var_tmp => rads_varptr (S, info%dataname(i0:i1-1))
+        if (associated(var_tmp)) then
+            ! record the full variable long name
+            math_summary_string = math_summary_string//'|'//trim(var_tmp%long_name)
+        endif 
+    else
+        ! record the RPN string (eg SUB)
+        math_summary_string = math_summary_string//'|'//trim(info%dataname(i0:i1-1))
+    endif
 	if (S%error /= rads_noerr) exit
 enddo
 
@@ -2098,6 +2113,16 @@ if (i > 0) then
 	write (stderr,*) i,' remaining items on stack'
 	call rads_error (S, rads_noerr, 'Cleaned up')
 endif
+
+! math summary string
+if (rads_verbose >= 2) write(*,*) "math summary string: ", trim(math_summary_string)
+if (len(math_summary_string) < len( info%comment )) then
+    ! keep the summary sting as a comment
+    ! will be written as variable attribute to netcdf by rads2nc
+    info%comment=trim(math_summary_string)
+else
+    write(*,*) "WARNING: math summary too long for comment field: ", trim(math_summary_string)
+endif 
 end subroutine rads_get_var_math
 
 subroutine rads_get_var_grid ! Get data by interpolating a grid
