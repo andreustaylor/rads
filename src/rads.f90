@@ -2107,9 +2107,13 @@ do
         endif 
     else
         ! record the RPN string (eg SUB)
+<<<<<<< HEAD
         math_summary_string = math_summary_string//math_summary_delimit//trim(info%dataname(i0:i1-1))
         ! record the RPN string (eg SUB)
         math_summary_fields = math_summary_fields//math_summary_delimit//trim(info%dataname(i0:i1-1))
+=======
+        math_summary_string = math_summary_string//'='//trim(info%dataname(i0:i1-1))
+>>>>>>> format: minor change to attribute RPN syntax as requested
     endif
     if (S%error /= rads_noerr) exit
 enddo
