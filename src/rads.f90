@@ -2073,7 +2073,7 @@ character(len=:), allocatable :: math_summary_string  ! note: could become longe
 
 ! Init a string to summarise details of the math operations
 ! ...idea is to accumulate by concatenation the RPN string - but using the full long name rather than alias
-math_summary_string = "method"
+math_summary_string = "method="
 
 ! Start with a nullified 'top'
 nullify(top)
@@ -2095,7 +2095,7 @@ do
         endif 
     else
         ! record the RPN string (eg SUB)
-        math_summary_string = math_summary_string//'|'//trim(info%dataname(i0:i1-1))
+        math_summary_string = math_summary_string//'='//trim(info%dataname(i0:i1-1))
     endif
 	if (S%error /= rads_noerr) exit
 enddo
