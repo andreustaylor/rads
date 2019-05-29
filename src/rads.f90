@@ -54,7 +54,7 @@ type :: rads_varinfo                                 ! Information on variable u
 	character(len=rads_strl) :: dataname             ! Name associated with data (e.g. NetCDF var name)
 	character(len=rads_cmdl) :: flag_meanings        ! Optional meaning of flag values ('' if none)
 	character(len=rads_cmdl) :: quality_flag         ! Quality flag(s) associated with var ('' if none)
-	character(len=rads_cmdl) :: comment              ! Optional comment ('' if none)
+	character(len=rads_strl) :: comment              ! Optional comment ('' if none)
 	character(len=rads_varl) :: units                ! Optional units of variable ('' if none)
 	character(len=rads_varl) :: format               ! Fortran format for output
 	character(len=rads_varl) :: gridx, gridy         ! RADS variable names of the grid x and y coords
@@ -2093,7 +2093,7 @@ do
     istat = math_eval (info%dataname(i0:i1-1), P%ndata, top)
     if (istat /= 0) then  ! No command or value, likely to be a variable
         call math_push (P%ndata,top)
-	call rads_get_var_by_name (S, P, info%dataname(i0:i1-1), top%data)
+        call rads_get_var_by_name (S, P, info%dataname(i0:i1-1), top%data)
         ! find the full name of this variable (not just the alias)
         var_tmp => rads_varptr (S, info%dataname(i0:i1-1))
         if (associated(var_tmp)) then
@@ -2111,7 +2111,7 @@ do
         ! record the RPN string (eg SUB)
         math_summary_fields = math_summary_fields//math_summary_delimit//trim(info%dataname(i0:i1-1))
     endif
-	if (S%error /= rads_noerr) exit
+    if (S%error /= rads_noerr) exit
 enddo
 
 ! When no error, copy top of stack to output
