@@ -54,7 +54,7 @@ type :: rads_varinfo                                 ! Information on variable u
 	character(len=rads_strl) :: dataname             ! Name associated with data (e.g. NetCDF var name)
 	character(len=rads_cmdl) :: flag_meanings        ! Optional meaning of flag values ('' if none)
 	character(len=rads_cmdl) :: quality_flag         ! Quality flag(s) associated with var ('' if none)
-	character(len=rads_strl) :: comment              ! Optional comment ('' if none)
+	character(len=rads_cmdl) :: comment              ! Optional comment ('' if none)
 	character(len=rads_varl) :: units                ! Optional units of variable ('' if none)
 	character(len=rads_varl) :: format               ! Fortran format for output
 	character(len=rads_varl) :: gridx, gridy         ! RADS variable names of the grid x and y coords
@@ -2074,7 +2074,6 @@ type(math_ll), pointer :: top
 integer(fourbyteint) :: i, i0, i1, istat
 type(rads_var), pointer :: var_tmp ! extra pointer so we can derefernce alias names for info summary 
 character(len=:), allocatable :: math_summary_string  ! note: could become longer than target in S%method
-character(len=:), allocatable :: math_summary_fields  ! note: could become longer than target in S%method
 character(len=1) :: math_summary_delimit='|'          ! character demlimiter in RPN
 character(len=10) :: field_string 
 
@@ -2099,21 +2098,13 @@ do
         if (associated(var_tmp)) then
             ! record the full variable long name
             math_summary_string = math_summary_string//math_summary_delimit//trim(var_tmp%long_name)
-            ! record the full variable long name
-            !write (field_string, '("f",i4,":",i4)') var_tmp%field(1) , var_tmp%field(2)  
             write (field_string, '(i4.0,":",i4.0)') var_tmp%field(1) , var_tmp%field(2)  
             math_summary_fields = math_summary_fields//math_summary_delimit//trim(field_string)
             write( field_string, '(a)') "null" 
         endif 
     else
         ! record the RPN string (eg SUB)
-<<<<<<< HEAD
         math_summary_string = math_summary_string//math_summary_delimit//trim(info%dataname(i0:i1-1))
-        ! record the RPN string (eg SUB)
-        math_summary_fields = math_summary_fields//math_summary_delimit//trim(info%dataname(i0:i1-1))
-=======
-        math_summary_string = math_summary_string//'='//trim(info%dataname(i0:i1-1))
->>>>>>> format: minor change to attribute RPN syntax as requested
     endif
     if (S%error /= rads_noerr) exit
 enddo
@@ -2134,7 +2125,6 @@ endif
 
 ! math summary string
 if (rads_verbose >= 2) write(*,*) "math summary string: ", trim(math_summary_string)
-if (rads_verbose >= 2) write(*,*) "math summary fields: ", trim(math_summary_fields)
 if (len(math_summary_string) < len( info%method )) then        ! assume "_string" is always longer than "_fields"
     ! keep the summary sting as a method
     ! will be written as variable attribute to netcdf by rads2nc
