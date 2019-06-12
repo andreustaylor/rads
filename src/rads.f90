@@ -4513,8 +4513,14 @@ else if (info%datatype == rads_type_flagvalues) then
 	e = e + nf90_put_att (ncid, varid_, 'flag_meanings', info%flag_meanings)
 endif
 if (info%quality_flag /= '') e = e + nf90_put_att (ncid, varid_, 'quality_flag', info%quality_flag)
-if (info%scale_factor /= 1d0) e = e + nf90_put_att (ncid, varid_, 'scale_factor', info%scale_factor)
-if (info%add_offset /= 0d0)  e = e + nf90_put_att (ncid, varid_, 'add_offset', info%add_offset)
+!-----------------
+! AUSBOM
+!   special requirement that we always write compress options, even if trivial (1,0)
+!if (info%scale_factor /= 1d0) e = e + nf90_put_att (ncid, varid_, 'scale_factor', info%scale_factor)
+!if (info%add_offset /= 0d0)  e = e + nf90_put_att (ncid, varid_, 'add_offset', info%add_offset)
+e = e + nf90_put_att (ncid, varid_, 'scale_factor', info%scale_factor)
+e = e + nf90_put_att (ncid, varid_, 'add_offset', info%add_offset)
+!-----------------
 if (info%datatype >= rads_type_time .or. info%dataname(:1) == ':' .or. info%ndims < 1) then
 	! Do not add coordinate attribute for some data types
 else if (info%ndims > 1 .and. S%n_hz_output .and. P%n_hz > 1) then
