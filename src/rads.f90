@@ -2085,12 +2085,12 @@ nullify(top)
 ! Process the math commands left to right
 i1 = 0
 do
-	if (.not.next_word (info%dataname, i0, i1)) exit
-	if (i1 == i0) cycle
-	istat = math_eval (info%dataname(i0:i1-1), P%ndata, top)
-	if (istat /= 0) then  ! No command or value, likely to be a variable
-		call math_push (P%ndata,top)
-		call rads_get_var_by_name (S, P, info%dataname(i0:i1-1), top%data)
+    if (.not.next_word (info%dataname, i0, i1)) exit
+    if (i1 == i0) cycle
+    istat = math_eval (info%dataname(i0:i1-1), P%ndata, top)
+    if (istat /= 0) then  ! No command or value, likely to be a variable
+        call math_push (P%ndata,top)
+	call rads_get_var_by_name (S, P, info%dataname(i0:i1-1), top%data)
         ! find the full name of this variable (not just the alias)
         var_tmp => rads_varptr (S, info%dataname(i0:i1-1))
         if (associated(var_tmp)) then
