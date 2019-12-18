@@ -59,6 +59,7 @@ type :: rads_varinfo                                 ! Information on variable u
 	character(len=rads_varl) :: format               ! Fortran format for output
 	character(len=rads_varl) :: gridx, gridy         ! RADS variable names of the grid x and y coords
 	character(len=rads_strl) :: method               ! Optional comment ('' if none)
+	character(len=rads_strl) :: method_fields        ! Optional comment ('' if none)
 	type(grid), pointer :: grid                      ! Pointer to grid (if data source is grid)
 	real(eightbytereal) :: default                   ! Optional default value (Inf if not set)
 	real(eightbytereal) :: limits(2)                 ! Lower and upper limit for editing
@@ -2071,7 +2072,9 @@ type(math_ll), pointer :: top
 integer(fourbyteint) :: i, i0, i1, istat
 type(rads_var), pointer :: var_tmp ! extra pointer so we can derefernce alias names for info summary 
 character(len=:), allocatable :: math_summary_string  ! note: could become longer than target in S%method
+character(len=:), allocatable :: math_summary_fields  ! note: could become longer than target in S%method
 character(len=1) :: math_summary_delimit='|'          ! character demlimiter in RPN
+character(len=10) :: field_string 
 
 ! Init a string to summarise details of the math operations
 ! ...idea is to accumulate by concatenation the RPN string - but using the full long name rather than alias
@@ -2094,10 +2097,17 @@ do
         if (associated(var_tmp)) then
             ! record the full variable long name
             math_summary_string = math_summary_string//math_summary_delimit//trim(var_tmp%long_name)
+            ! record the full variable long name
+            !write (field_string, '("f",i4,":",i4)') var_tmp%field(1) , var_tmp%field(2)  
+            write (field_string, '(i4.0,":",i4.0)') var_tmp%field(1) , var_tmp%field(2)  
+            math_summary_fields = math_summary_fields//math_summary_delimit//trim(field_string)
+            write( field_string, '(a)') "null" 
         endif 
     else
         ! record the RPN string (eg SUB)
         math_summary_string = math_summary_string//math_summary_delimit//trim(info%dataname(i0:i1-1))
+        ! record the RPN string (eg SUB)
+        math_summary_fields = math_summary_fields//math_summary_delimit//trim(info%dataname(i0:i1-1))
     endif
 	if (S%error /= rads_noerr) exit
 enddo
@@ -2118,10 +2128,12 @@ endif
 
 ! math summary string
 if (rads_verbose >= 2) write(*,*) "math summary string: ", trim(math_summary_string)
-if (len(math_summary_string) < len( info%method )) then
+if (rads_verbose >= 2) write(*,*) "math summary fields: ", trim(math_summary_fields)
+if (len(math_summary_string) < len( info%method )) then        ! assume "_string" is always longer than "_fields"
     ! keep the summary sting as a method
     ! will be written as variable attribute to netcdf by rads2nc
     info%method=trim(math_summary_string)
+    info%method_fields=trim(math_summary_fields)
 else
     write(*,*) "WARNING: math summary too long for method field: ", trim(math_summary_string)
 endif 
@@ -2900,9 +2912,10 @@ if (associated(tgt)) then
 	allocate (name)
 else
 	allocate (ptr%info)
-    ! 1-name  2-long_name 3-standard_name  4-source 5-parameters 6-dataname 7-flag_meaning 8-quality_flag 9-comment 10-units 11-format 12gridx 13-gridy 14-method      
-    !                        1          2      3   4   5   6   7   8   9   10   11     12  13  14
-    ptr%info = rads_varinfo (varname, varname, '', '', '', '', '', '', '', '', 'f0.3', '', '','', null(), &
+    ! 1-name  2-long_name 3-standard_name  4-source 5-parameters 6-dataname 7-flag_meaning 8-quality_flag 9-comment 10-units
+    ! 11-format 12gridx 13-gridy 14-method 15-method_fields     
+    !                        1          2      3   4   5   6   7   8   9   10  11      12  13 14 15
+    ptr%info = rads_varinfo (varname, varname, '', '', '', '', '', '', '', '', 'f0.3', '', '','','', null(), &
 		huge(0d0), nan, nan, 0d0, 1d0, nan, nan, 0d0, 0d0, .false., 1, 1, nf90_double, 0, 0, 0, 0, 0, 0, 0)
 	name => ptr%info%name
 endif
@@ -4493,7 +4506,8 @@ else
 endif
 if (var%field(1) /= rads_nofield) e = e + nf90_put_att (ncid, varid_, 'field', var%field(1))
 if (info%comment /= '') e = e + nf90_put_att (ncid, varid_, 'comment', info%comment)
-if (info%method /= '')  e = e + nf90_put_att (ncid, varid_, 'method' , info%method)
+if (info%method /= '')         e = e + nf90_put_att (ncid, varid_, 'method'        , info%method)
+if (info%method_fields /= '')  e = e + nf90_put_att (ncid, varid_, 'method_fields' , info%method_fields)
 if (e /= 0) call rads_error (S, rads_err_nc_var, &
 	'Error writing attributes for variable "'//trim(var%name)//'" in file', P)
 info%cycle = P%cycle
