@@ -2074,6 +2074,7 @@ type(math_ll), pointer :: top
 integer(fourbyteint) :: i, i0, i1, istat
 type(rads_var), pointer :: var_tmp ! extra pointer so we can derefernce alias names for info summary 
 character(len=:), allocatable :: math_summary_string  ! note: could become longer than target in S%method
+character(len=:), allocatable :: math_summary_fields  ! note: could become longer than target in S%method
 character(len=1) :: math_summary_delimit='|'          ! character demlimiter in RPN
 character(len=10) :: field_string 
 
@@ -2105,6 +2106,8 @@ do
     else
         ! record the RPN string (eg SUB)
         math_summary_string = math_summary_string//math_summary_delimit//trim(info%dataname(i0:i1-1))
+        ! record the RPN string (eg SUB)
+        math_summary_fields = math_summary_fields//math_summary_delimit//trim(info%dataname(i0:i1-1))
     endif
     if (S%error /= rads_noerr) exit
 enddo
