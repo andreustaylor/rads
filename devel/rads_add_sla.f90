@@ -1,5 +1,5 @@
 !-----------------------------------------------------------------------
-! Copyright (c) 2011-2019  Remko Scharroo
+! Copyright (c) 2011-2020  Remko Scharroo
 ! See LICENSE.TXT file for copying and redistribution conditions.
 !
 ! This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
 ! GNU Lesser General Public License for more details.
 !-----------------------------------------------------------------------
 
-!*rads_add_sla -- Add SST temperature and ice concentration to RADS data
+!*rads_add_sla -- Add precomputed sea level anomaly
 !+
 ! This program adds the sea level anomaly, as computed based on the
 ! standard rules to construct the sea level anomaly, including edit

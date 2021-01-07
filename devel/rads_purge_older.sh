@@ -1,6 +1,6 @@
 #!/bin/bash
 #-----------------------------------------------------------------------
-# Copyright (c) 2011-2019  Remko Scharroo
+# Copyright (c) 2011-2020  Remko Scharroo
 # See LICENSE.TXT file for copying and redistribution conditions.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@
 # rads_purge_older.sh -- Remove older files from RADS directory tree
 # Usage: rads_purge_older.sh <directory>
 #
-for dir in $* ; do
-	find $dir -not -newer $dir/.bookmark -not -name .bookmark -type f -delete
-	find $dir -mindepth 1 -type d -empty -delete
+for dir in "$@" ; do
+	find "$dir" -not -newer "$dir"/.bookmark -not -name .bookmark -type f -delete
+	find "$dir" -mindepth 1 -type d -empty -delete
 done

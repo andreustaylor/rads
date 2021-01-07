@@ -1,5 +1,5 @@
 %-----------------------------------------------------------------------
-% Copyright (c) 2011-2019  Remko Scharroo
+% Copyright (c) 2011-2020  Remko Scharroo
 % See LICENSE.TXT file for copying and redistribution conditions.
 %
 % This program is free software: you can redistribute it and/or modify
@@ -855,12 +855,12 @@ The coastal proximity parameter is a dimensionless measure of the effect of land
 \end{vartable}
 
 \section{Basin codes}
-Eric Leuliette (NOAA) divided the world's larger water bodies into 39 different ocean basins, enclosed seas and lakes, giving each of them a separate numerical code. This has been represented in a grid with a 5'$\times$5' resolution as shown in Figure~\ref{fig:basin_codes}. This grid is queried to the nearest grid point when creating the RADS data and stored as the variable \var{basin_code}. For land areas a default value of NaN is stored.
+Eric Leuliette (NOAA) divided the world's larger water bodies into 39 different ocean basins, enclosed seas and lakes, giving each of them a separate numerical code. This has been represented in a grid with a 5'$\times$5' resolution as shown in Figure~\ref{fig:basin_codes}. This grid is queried to the nearest grid point when creating the RADS data and stored as the variable \var{basin}. For land areas a default value of NaN is stored.
 
 This field allows users to separate the selected data by region, or select data from just a single region. Normally data from all regions is selected.
 
 \begin{vartable}
-\var{basin_code} & 36, 3601 & basin code & - & all && \\
+\var{basin} & 36, 3601 & basin code & - & all && \\
 \end{vartable}
 
 \begin{figure}
@@ -869,8 +869,27 @@ This field allows users to separate the selected data by region, or select data 
 \label{fig:basin_codes}
 \end{figure}
 
+\section{Latency flag}
+RADS incorporates the latest available level-2 products from each mission. To distinguish the timeliness of the baseline product processed for each pass, the var{latency} flag is available. By default, data from all latencies is provided.
+
+\begin{table}
+\small
+\begin{tabular}{lrl}
+\hline
+\var{latency} & values & sat \\
+\hline
+Near-Real Time (NRT) or Operational GDR (OGDR) & 0 & 3a 3b j3 sa \\
+Slow-Time Critical (STC) or Interim GDR (IGDR) & 1 & 3a 3b j3 c2 sa \\
+Non-Time Critical (NTC) or ``Final'' GDR (GDR) & 2 & all except c2 \\
+Reprocessing Baseline Collection 001 & 3 & 3a 3b \\
+Reprocessing Baseline Collection 002 & 4 & 3a 3b \\
+Reprocessing Baseline Collection 003 & 5 & 3a 3b \\
+Reprocessing Baseline Collection 004 & 6 & 3a 3b \\
+\hline
+\end{tabular}
+\end{table}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \bibliography{altim}
 \printindex
 \end{document}
-

@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------
-# Copyright (c) 2011-2019  Remko Scharroo
+# Copyright (c) 2011-2020  Remko Scharroo
 # See LICENSE.TXT file for copying and redistribution conditions.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ CONFIG = rads_config.tex rads4_sats.tex
 MAN = rads4_data_manual.pdf rads4_user_manual.pdf
 SUBS = rads rads_geo rads_grid rads_math rads_misc rads_netcdf rads_time
 SUBS_TEX = $(foreach sub,$(SUBS),sub/$(sub).tex)
-PROGS = rads2asc4 rads2nc rads2grd4 radscolin4 radspassesindex4
+PROGS = rads2asc4 rads2nc rads2grd4 radscolin4 radspassesindex4 radsstat4
 PROGS_EXTRA = rads2grd4-o radscolin4-r radsstat4-h
 PROGS_HLP = $(foreach prog,$(PROGS),sub/$(prog).hlp)
 PROGS_OUT = $(foreach prog,$(PROGS) $(PROGS_EXTRA),sub/$(prog).out)
@@ -113,6 +113,11 @@ sub/radscolin4.out:	Makefile ../../src/radscolin4
 
 sub/radscolin4-r.out:	Makefile ../../src/radscolin4
 	PATH=../../src radscolin4 -S e2 -C 0,2 -P 915,1000,2 -R -8,42,28,48 -V lat,sla,swh -r > $(@F)
+	(head -n 18 $(@F); $(SEPARATOR); tail -n 4 $(@F)) > $@
+	rm -f $(@F)
+
+sub/radsstat4.out:	Makefile ../../src/radsstat4
+	PATH=../../src radsstat4 -S e2 -C 0,2 -d -V lat,sla,swh > $(@F)
 	(head -n 18 $(@F); $(SEPARATOR); tail -n 4 $(@F)) > $@
 	rm -f $(@F)
 

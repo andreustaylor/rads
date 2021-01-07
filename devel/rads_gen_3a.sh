@@ -1,6 +1,6 @@
 #!/bin/bash
 #-----------------------------------------------------------------------
-# Copyright (c) 2011-2019  Remko Scharroo
+# Copyright (c) 2011-2020  Remko Scharroo
 # See LICENSE.TXT file for copying and redistribution conditions.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ lst=$SANDBOX/rads_gen_3a.lst
 
 date													>  $log 2>&1
 
-find $* -name "*.nc" | sort > $lst
+find "$@" -name "*.nc" | sort > $lst
 rads_gen_s3 	  $options --min-rec=6 < $lst			>> $log 2>&1
 
 # General geophysical corrections

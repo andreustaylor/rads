@@ -1,5 +1,5 @@
 !****-------------------------------------------------------------------
-! Copyright (c) 2011-2019  Remko Scharroo
+! Copyright (c) 2011-2020  Remko Scharroo
 ! See LICENSE.TXT file for copying and redistribution conditions.
 !
 ! This program is free software: you can redistribute it and/or modify
@@ -61,6 +61,7 @@ real(eightbytereal), parameter, private :: nan = transfer ((/not(0_fourbyteint),
 ! HYPOT   |  a b HYPOT| sqrt(a*a+b*b)
 ! R2      |  a b R2   | a*a + b*b
 ! ISNAN   |  a ISNAN  | if (isnan(a)) 1 else 0
+! IOR     |  a b IOR  | bitwise OR of a and b
 ! --------------------------------------------
 ! Only 2 buffers can be used, so the computation has to remain relatively
 ! simple.

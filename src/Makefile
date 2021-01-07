@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------
-# Copyright (c) 2011-2019  Remko Scharroo
+# Copyright (c) 2011-2020  Remko Scharroo
 # See LICENSE.TXT file for copying and redistribution conditions.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -98,7 +98,7 @@ $(LIB):	$(OBJS) $(DEVEL_OBJS)
 # Test programs
 #-----------------------------------------------------------------------
 
-TEST=rads_test -vvv -Se1/a --ymd=19910924,19910925 -R-90/120/-50/30 -Vtime,lat,lon,sla,12_,tide_ocean_,flags_,pass,drange | egrep -v "Created|CPU"
+TEST=rads_test -vvv -Se1/a --ymd=19910924,19910925 -R-90/120/-50/30 -Vtime,lat,lon,sla,12_,tide_ocean_,flags_,pass,drange | egrep -v "Created|CPU" | sed "s@$(datadir)@@g"
 test:	rads_test
 	$(TEST) | diff - rads_test.out
 rads_test.out:	rads_test
