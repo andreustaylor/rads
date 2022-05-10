@@ -1,16 +1,22 @@
 set -euax 
 # what: basic build for NCI
-# note: probably not the best way to include netcdf paths ...hardcoded to match module   
+# manual recommends gfortran
+module unload gcc
+module load gcc/11.1.0
 
-# modules
-module load netcdf/4.7.3
-module load intel-compiler/2020.1.217
+NCVER=4.7.3
+module unload netcdf
+module load netcdf/${NCVER}
 
 # working path
 RADS=$(pwd) # eg /g/data/ep4/altimetry/rads
 cd $RADS
 
+# fixed path for where RADS database is sync
+DATA=/g/data/ep4/altimetry/data
+
 # build
-./configure --bindir ${RADS}/bin/ --with-netcdf-inc=/apps/netcdf/4.7.3/include/ --with-netcdf-lib=/apps/netcdf/4.7.3/lib/
+make clean
+./configure  --enable-debug --datarootdir ${DATA}
 make install
 
