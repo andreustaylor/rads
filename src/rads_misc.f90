@@ -1,5 +1,5 @@
 !****-------------------------------------------------------------------
-! Copyright (c) 2011-2020  Remko Scharroo
+! Copyright (c) 2011-2021  Remko Scharroo
 ! See LICENSE.TXT file for copying and redistribution conditions.
 !
 ! This program is free software: you can redistribute it and/or modify
@@ -466,6 +466,32 @@ do i = 1,len(string)
 	endif
 enddo
 end function strtoupper
+
+!****f* rads_misc/basename
+! SUMMARY
+! Get basename of full pathname
+!
+! SYNOPSIS
+elemental function basename (pathname) result (filename)
+character(len=*), intent(in) :: pathname
+character(len=len(pathname)) :: filename
+!
+! PURPOSE
+! Convert character string of a pathname to its base filename.
+! Example: basename("bar/foo.txt") results in "foo.txt"
+!
+! ARGUMENTS
+! pathname : Full pathname
+! filename : Base filename
+!****-------------------------------------------------------------------
+integer :: i
+i = index(pathname, '/', back=.true.)
+if (i > 0) then
+	filename = pathname(i+1:)
+else
+	filename = pathname
+endif
+end function basename
 
 !****f* rads_misc/getlun
 ! SUMMARY
@@ -1080,6 +1106,35 @@ else
 	x = sign(10d0*p,x)
 endif
 end subroutine round_up
+
+
+!****f* rads_misc/findloc1
+! SUMMARY
+! Find specified value in array
+!
+! SYNOPSIS
+pure function findloc1 (array, value)
+use typesizes
+real(eightbytereal), intent(in) :: array(:), value
+integer(fourbyteint) :: findloc1
+!
+! PURPOSE
+! Determines the location of the first element in the array <array> with the value given
+! in the <value> argument. If no matching value is found, the function returns 0.
+!
+! This function replaces the Fortran function call FINDLOC (ARRAY, VALUE, 1),
+! since FINDLOC was only implemented in gfortran version 9.
+!
+! ARGUMENTS
+! array    : Array of values
+! value    : Value to be searched for
+! findloc1 : Location of <value> in <array> or 0 if not found
+!****-------------------------------------------------------------------
+do findloc1 = 1, size(array)
+	if (array(findloc1) == value) return
+enddo
+findloc1 = 0
+end function findloc1
 
 !***********************************************************************
 

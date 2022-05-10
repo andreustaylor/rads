@@ -1,6 +1,6 @@
 #!/bin/bash
 #-----------------------------------------------------------------------
-# Copyright (c) 2011-2020  Remko Scharroo
+# Copyright (c) 2011-2021  Remko Scharroo
 # See LICENSE.TXT file for copying and redistribution conditions.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -60,12 +60,13 @@ for type in ${types}; do
 	esac
 
 # General geophysical corrections
+    rads_add_grid     $options -Vangle_coast                >> "$log" 2>&1
 	rads_add_common   $options								>> "$log" 2>&1
-	rads_add_refframe $options --ext=plrm					>> "$log" 2>&1
+	rads_add_mfwam    $options --all						>> "$log" 2>&1
 	rads_add_iono     $options --all						>> "$log" 2>&1
 # Redetermine SSHA
-	rads_add_sla      $options								>> "$log" 2>&1
-	rads_add_sla      $options --ext=plrm					>> "$log" 2>&1
+	rads_add_refframe $options -x -x plrm					>> "$log" 2>&1
+	rads_add_sla      $options -x -x plrm					>> "$log" 2>&1
 
 	date													>> "$log" 2>&1
 
