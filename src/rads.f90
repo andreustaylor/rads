@@ -2160,16 +2160,16 @@ if (i > 0) then
 	call rads_error (S, rads_noerr, 'Cleaned up')
 endif
 
-! math summary string
-if (rads_verbose >= 2) write(*,*) "math summary string: ", trim(math_summary_string)
-if (len(math_summary_string) < len( info%method )) then        ! assume "_string" is always longer than "_fields"
-    ! keep the summary sting as a method
-    ! will be written as variable attribute to netcdf by rads2nc
-    info%method=trim(math_summary_string)
-    info%method_fields=trim(math_summary_fields)
-else
-    write(*,*) "WARNING: math summary too long for method field: ", trim(math_summary_string)
-endif 
+!   ! math summary string
+!   if (rads_verbose >= 2) write(*,*) "math summary string: ", trim(math_summary_string)
+!   if (len(math_summary_string) < len( info%method )) then        ! assume "_string" is always longer than "_fields"
+!       ! keep the summary sting as a method
+!       ! will be written as variable attribute to netcdf by rads2nc
+!       info%method=trim(math_summary_string)
+!       info%method_fields=trim(math_summary_fields)
+!   else
+!       write(*,*) "WARNING: math summary too long for method field: ", trim(math_summary_string)
+!   endif 
 end subroutine rads_get_var_math
 
 subroutine rads_get_var_grid ! Get data by interpolating a grid
